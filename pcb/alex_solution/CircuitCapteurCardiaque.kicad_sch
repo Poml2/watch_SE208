@@ -3460,7 +3460,7 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 46.99) (xy 33.02 46.99)
+			(xy 25.4 46.99) (xy 33.02 46.99)
 		)
 		(stroke
 			(width 0)
@@ -4456,7 +4456,7 @@
 	)
 	(global_label "Sensor"
 		(shape input)
-		(at 26.67 46.99 180)
+		(at 25.4 46.99 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4466,7 +4466,7 @@
 		)
 		(uuid "8fc830cb-7932-453d-a1a9-cc9cc21bd8d9")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 17.2744 46.99 0)
+			(at 16.0044 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
