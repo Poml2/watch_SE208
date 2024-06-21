@@ -14,11 +14,16 @@ BLUE = 0x1F00
 WHITE = 0xFFFF
 BLACK = 0x0000
 
+#Graphic parameters
 lcd = LCD_0inch96()   # Initializing the scree n
 lcd.fill(BLACK)       # clearing any exsiting diplay
+
 WIDTH_SCREEN = 160    # width of the screen  
 HEIGHT_SCREEN = 80    # height of the screen
 
+HEIGHT_GRAPHIC = 60   # height of the graphic
+WIDTH_GRAPHIC = WIDTH_SCREEN    # width of the graphic  
+  
 #ADC parameters
 ADC_PIN = 26
 ADC_MAX_VALUE = 2**16
@@ -32,11 +37,15 @@ def interruption_handler(pin):
     # function to display over the screen
     lcd.fill(BLACK)
 
+    # this function must give to us the bpm value
+    bpm = getbpm(); 
+
+    display_bpm(bpm)
     display_tension(from_adc_to_voltage(analog_read))
-    display_bpm(10)
-    display_frame()
+    #display_frame()
+    display_signal()
     display_point(79,39,RED)
-    
+
     lcd.display()
 
 def from_adc_to_voltage(analog_read) : 
@@ -44,11 +53,15 @@ def from_adc_to_voltage(analog_read) :
 
 # display the value on the screen
 def display_tension(analog_read) : 
-    lcd.text("Voltage : "+str(analog_read),5,5,GREEN)
+    lcd.text("Voltage : "+str(analog_read),5,20,GREEN)
+
+# get the bpm value by using the ADC value
+def getbpm() :
+    return 666
 
 # display the value on the screen
-def display_bpm(bpm) : 
-    lcd.text("BPM : "+str(bpm),5,20,GREEN)
+def display_bpm(bpm = 0) : 
+    lcd.text("BPM : "+str(bpm),5,5,GREEN)
 
 # display a frame on the border screen
 def display_frame() : 
@@ -59,9 +72,18 @@ def display_frame() :
     lcd.vline(0,0,80,BLUE)
     lcd.vline(159,0,80,BLUE)
 
+# display the signal on the screen 
+def display_signal() : 
+    # display the signal
+    for i in range(0,WIDTH_GRAPHIC) : 
+        lcd.vline(i,HEIGHT_SCREEN-1,1,RED)
+    
+    for i in range(0,HEIGHT_GRAPHIC) : 
+        lcd.vline(0,HEIGHT_SCREEN-i,1,RED)
+
+# display the point
+# argument : x,y,color
 def display_point(x,y,color) : 
-    # display the point
-    # argument : x,y,color
     lcd.vline(x,y,1,color)
      
 #Main function
