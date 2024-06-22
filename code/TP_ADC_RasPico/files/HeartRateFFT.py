@@ -1,7 +1,7 @@
 import numpy as np
 
 '''
-Fonction calculant le rythme cardiaque d'après le signal fenêtré sur un certain nombre d'échantillons et la fréquence d'échantillonage Fe
+Fonction calculant le rythme cardiaque avec FFT d'après le signal fenêtré sur un certain nombre d'échantillons et la fréquence d'échantillonage Fe
 '''
 def HeartRateFFT(windowed_signal, Fe):
     spectre = np.abs(np.fft.rfft(windowed_signal))
@@ -15,12 +15,12 @@ def HeartRateFFT(windowed_signal, Fe):
 
     return(60*freq[np.argmax(spectre)])
 
-''' # POUR TESTER LE FONCTIONNEMENT AVEC LES DONNEES DE TEST
+""" # POUR TESTER LE FONCTIONNEMENT AVEC LES DONNEES DE TEST
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = open("C:/Users/Keshav/Downloads/TP_ADC_RasPico/files/HeartAcq_mod.csv")
+file = open("   METTRE CHEMIN ADEQUAT ICI   /TP_ADC_RasPico/files/HeartAcq_mod.csv")
 csv_reader = csv.reader(file)
 rows = []
 #Lecture des données dans la liste rows
@@ -37,7 +37,6 @@ for i in range(len(rows)):
 
 #Conversion en array pour des manipulations plus faciles
 rows = np.asarray(rows)
-
 
 #Fréquence d'échantillonage (80Hz dans l'exemple du fichier HeartAcq_mod.csv)
 Fe = 80
@@ -61,4 +60,4 @@ plt.ylabel("Amplitude en unités arbitraires")
 #Rythme cardiaque
 print(60*freq[np.argmax(spectre)])
 plt.show()
-'''
+"""
