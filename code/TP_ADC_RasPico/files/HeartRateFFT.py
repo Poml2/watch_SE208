@@ -38,7 +38,7 @@ for i in range(len(rows)):
 #Conversion en array pour des manipulations plus faciles
 rows = np.asarray(rows)
 
-N = len(rows)
+
 #Fréquence d'échantillonage (80Hz dans l'exemple du fichier HeartAcq_mod.csv)
 Fe = 80
 #Calcul du spectre sur window_size échantillons soit window_size/Fe = ... secondes
