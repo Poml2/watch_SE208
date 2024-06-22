@@ -15,12 +15,12 @@ def HeartRateFFT(windowed_signal, Fe):
 
     return(60*freq[np.argmax(spectre)])
 
-''' POUR TESTER LE FONCTIONNEMENT AVEC LES DONNEES DE TEST
+''' # POUR TESTER LE FONCTIONNEMENT AVEC LES DONNEES DE TEST
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = open("   METTRE CHEMIN ADEQUAT ICI    /TP_ADC_RasPico/files/HeartAcq_mod.csv")
+file = open("C:/Users/Keshav/Downloads/TP_ADC_RasPico/files/HeartAcq_mod.csv")
 csv_reader = csv.reader(file)
 rows = []
 #Lecture des données dans la liste rows
@@ -54,7 +54,7 @@ freq = freq[1:]
 spectre = spectre[1:]
 
 plt.plot(freq, spectre)
-plt.title("Spectre du signal du capteur sans composante continue (calculé ici sur " + str(window_size) + "/" + Fe + " = 5 secondes)")
+plt.title("Spectre du signal du capteur sans composante continue (calculé ici sur " + str(window_size) + "/" + str(Fe) + " = "+ str(window_size/Fe) +" secondes)")
 plt.xlabel("Battements par seconde")
 plt.ylabel("Amplitude en unités arbitraires")
 
