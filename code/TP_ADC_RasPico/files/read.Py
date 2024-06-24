@@ -739,59 +739,47 @@ x = [1.962245
 ,
 2.922043
 ]
+# Filtrage par moyenne glissante
+filter_signal = [0] * len(x)
+window_size = 20
 
-plt.plot(x)
+# Calcul de la moyenne glissante
+for i in range(1, len(x) - window_size + 1):
+    filter_signal[i] = sum(x[i:i + window_size]) / window_size
+
+# Tracer le signal filtré
+plt.plot(x, label='Original Signal')
+plt.plot(filter_signal, label='Filtered Signal')
+plt.legend()
 plt.show()
 
-# filtre passe bas 
+# Fréquence d'échantillonnage
+Fe = 80
 
-# Paramètres du filtre passe-bas
-Fe = 80  # Fréquence d'échantillonnage en Hz
-Fc = 1   # Fréquence de coupure en Hz
-alpha = Fc / (Fe + Fc)  # Coefficient de filtrage
+# Signal après filtrage (en retirant les premiers échantillons incomplets)
+signal = filter_signal[window_size - 1:]
 
-# Appliquer le filtre passe-bas
-filtered_signal = []
-prev_y = x[0]  # Initialiser avec la première valeur du signal
-for sample in x:
-    new_y = alpha * sample + (1 - alpha) * prev_y
-    filtered_signal.append(new_y)
-    prev_y = new_y
+# Calcul de la moyenne du signal filtré
+average = sum(signal) / len(signal)
+print("Average:", average)
 
-# Afficher le signal filtré
-plt.plot(filtered_signal)
-plt.title("Signal filtré")
-plt.show()
+# Détection des fronts montants
+delta = int(round(0.1 * Fe))  # delta correspond à 0,1 secondes d'échantillons
+peak_indices = []
+peak_flag = 0
 
-# Calculer le rythme cardiaque sur le signal filtré
-def HeartRatePosedge(signal, Fe):
-    # Calcul de la moyenne du signal sur cette fenêtre
-    average = sum(signal) / len(signal)
+for k in range(delta, len(signal)):
+    if signal[k - delta] < average < signal[k] and peak_flag == 0:
+        peak_indices.append(k)
+        peak_flag = delta  # Empêche la détection de multiples pics dans un court intervalle
+    else:
+        if peak_flag > 0:
+            peak_flag -= 1
 
-    # En étudiant plusieurs électrocardiogrammes, nous avons remarqué que le signal d'une onde R
-    # allait de son minimum à son maximum en au plus 0,1 secondes.
-    # Donc pour détecter un front montant, on compare la valeur de signal[i] à la moyenne,
-    # et celle de signal[i + delta] à la moyenne, où:
-    # i correspond à un échantillon donné
-    # delta correspond au nombre d'échantillons pendant 0,1 secondes: delta = 0,1*Fe
+# Compter le nombre de pics détectés
+peak_counter = len(peak_indices)
+print("Number of Peaks:", peak_counter)
 
-    delta = int(round(0.1 * Fe))
-    peak_indices = [0] * delta  # Cette liste va servir à stocker les indices des fronts montants
-    peak_flag = 0  # Flag servant à éviter les erreurs de comptage
-
-    for k in range(delta, len(signal)):
-        if (signal[k - delta] < average) and (signal[k] > average) and (peak_flag == 0):
-            peak_indices.append(1)
-            peak_flag = delta  # Pendant delta échantillons, on ne cherche plus de fronts montants
-        else:
-            if peak_flag > 0:
-                peak_flag -= 1
-            peak_indices.append(0)
-
-    peak_counter = sum(peak_indices)  # Compteur de fronts montants
-    # Rythme cardiaque
-    return 60 * peak_counter * Fe / len(signal)
-
-# Utiliser la fonction pour calculer le rythme cardiaque sur le signal filtré
-heart_rate = HeartRatePosedge(filtered_signal, Fe)
-print("Rythme cardiaque:", heart_rate)
+# Calcul du rythme cardiaque (BPM)
+bpm = 60 * peak_counter * Fe / len(signal)
+print("BPM:", bpm)
