@@ -31,12 +31,12 @@ def HeartRatePosedge(signal, Fe):
     #Rythme cardiaque
     return(60*peak_counter*Fe/len(signal))
 
-""" # POUR TESTER LE FONCTIONNEMENT AVEC LES DONNEES DE TEST
+# POUR TESTER LE FONCTIONNEMENT AVEC LES DONNEES DE TEST
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = open("C:/Users/Keshav/Downloads/TP_ADC_RasPico/files/HeartAcq_mod.csv")
+file = open("HeartAcq_mod.csv")
 csv_reader = csv.reader(file)
 rows = []
 #Lecture des données dans la liste rows
@@ -60,8 +60,8 @@ Fe = 80
 window_size = 400
 signal = rows[:window_size, 1]
 
-#Calcul de la moyenne du signal sur cette fenêtre
-average = np.average(signal)
+# Calcul de la moyenne du signal sur cette fenêtre
+average = sum(signal) / len(signal)
 
 '''
 En étudiant plusieurs électrocardiogrammes, nous avons remarqué que le signal d'une onde R
@@ -71,21 +71,22 @@ et celle de signal[i + delta] à la moyenne, où:
 i correspond à un échantillon donné
 delta correspond au nombre d'échantillons pendant 0,1 secondes: delta = 0,1*Fe
 '''
-delta = int(np.round(0.1*Fe))
-peak_indices = delta*[0] #Cette liste va servir à stocker les indices des fronts montants
-peak_flag = 0 #Flag servant à éviter les erreurs de comptage
+delta = int(round(0.25 * Fe))
+peak_indices = [0] * delta  # Cette liste va servir à stocker les indices des fronts montants
+peak_flag = 0  # Flag servant à éviter les erreurs de comptage
+
 for k in range(delta, len(signal)):
-    if (signal[k-delta] < average) and (signal[k] > average) and (peak_flag == 0):
+    if (signal[k - delta] < average) and (signal[k] > average) and (peak_flag == 0):
         peak_indices.append(1)
-        peak_flag = delta #Pendant delta échantillons, on ne cherche plus de fronts montants
+        peak_flag = delta  # Pendant delta échantillons, on ne cherche plus de fronts montants
     else:
-        if (peak_flag > 0):
+        if peak_flag > 0:
             peak_flag -= 1
         peak_indices.append(0)
 
-#Rythme cardiaque
-peak_counter = np.sum(peak_indices) #Compteur de fronts montants
-print(60*peak_counter*Fe/len(signal))
+peak_counter = sum(peak_indices)  # Compteur de fronts montants
+# Rythme cardiaque
+print(60 * peak_counter * Fe / len(signal))
 
 plt.plot(signal) #Signal
 plt.plot(len(signal)*[average]) #Moyenne du signal
@@ -95,4 +96,3 @@ plt.xlabel("Échantillon")
 plt.ylabel("Amplitude en unités arbitraires")
 plt.legend(["Signal", "Moyenne", "Fronts montants"])
 plt.show()
-"""
